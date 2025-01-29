@@ -5,6 +5,7 @@ import com.task.wallet.exception_handler.WalletApplicationException;
 import com.task.wallet.model.entity.Wallet;
 import com.task.wallet.model.enums.OperationType;
 import com.task.wallet.repository.WalletRepository;
+import com.task.wallet.service.operation.WalletOperationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +20,11 @@ public class WalletServiceImpl implements WalletService {
 
     private final WalletRepository walletRepository;
 
-    public WalletServiceImpl(WalletRepository walletRepository) {
+    private final WalletOperationService walletOperationService;
+
+    public WalletServiceImpl(WalletRepository walletRepository, WalletOperationService walletOperationService) {
         this.walletRepository = walletRepository;
+        this.walletOperationService = walletOperationService;
     }
 
     /**
@@ -53,20 +57,7 @@ public class WalletServiceImpl implements WalletService {
                 .orElseThrow(() -> new WalletApplicationException(
                         ErrorCode.NOT_FOUND,
                         String.format("Счёт с ID %s не найден в базе для выполнения операции", walletId)));
-        BigDecimal currentBalance = wallet.getBalance();
-        BigDecimal newBalance = switch (operationType) {
-            case DEPOSIT -> currentBalance.add(amount);
-            case WITHDRAW -> {
-                if (currentBalance.compareTo(amount) < 0) {
-                    throw new WalletApplicationException(
-                            ErrorCode.BAD_REQUEST,
-                            String.format("Недостаточно средств на счёте с ID %s для снятия, доступно %s", walletId,
-                                    currentBalance)
-                    );
-                }
-                yield currentBalance.subtract(amount);
-            }
-        };
+        BigDecimal newBalance = walletOperationService.execute(walletId, operationType, wallet.getBalance(), amount);
         wallet.setBalance(newBalance);
         walletRepository.save(wallet);
         return wallet;

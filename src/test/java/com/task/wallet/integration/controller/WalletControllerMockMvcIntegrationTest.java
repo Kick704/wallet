@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -68,7 +67,7 @@ public class WalletControllerMockMvcIntegrationTest {
     }
 
     /**
-     * Тест на успешное получение существующего кошелька по его идентификатору
+     * Тест на успешное получение существующего счёта по его идентификатору
      *
      * @throws Exception если выполнение запроса или проверка результата не удалась
      */
@@ -81,7 +80,7 @@ public class WalletControllerMockMvcIntegrationTest {
     }
 
     /**
-     * Тест на попытку получения несуществующего кошелька с ожиданием ошибки 404
+     * Тест на попытку получения несуществующего счёта с ожиданием ошибки 404
      *
      * @throws Exception если выполнение запроса или проверка результата не удалась
      */
@@ -96,7 +95,7 @@ public class WalletControllerMockMvcIntegrationTest {
     }
 
     /**
-     * Тест на попытку вывода средств с несуществующего кошелька с ожиданием ошибки 404
+     * Тест на попытку вывода средств с несуществующего счёта с ожиданием ошибки 404
      *
      * @throws Exception если выполнение запроса или проверка результата не удалась
      */
@@ -104,7 +103,7 @@ public class WalletControllerMockMvcIntegrationTest {
     void givenRequest_whenWithdrawFromNonExistentWallet_thenStatus404andExceptionThrown() throws Exception {
         UUID randomWalletId = UUID.randomUUID();
         WalletRequestDto walletRequestDto = new WalletRequestDto(
-                randomWalletId,
+                randomWalletId.toString(),
                 OperationType.WITHDRAW.name(),
                 new BigDecimal("100")
         );
@@ -125,7 +124,7 @@ public class WalletControllerMockMvcIntegrationTest {
     @Test
     void givenRequest_whenInsufficientFundsForWithdraw_thenStatus400andExceptionThrown() throws Exception {
         WalletRequestDto walletRequestDto = new WalletRequestDto(
-                wallet.getId(),
+                wallet.getId().toString(),
                 OperationType.WITHDRAW.name(),
                 new BigDecimal("1000")
         );
@@ -141,19 +140,19 @@ public class WalletControllerMockMvcIntegrationTest {
     }
 
     /**
-     * Тест на выполнение конкурентных операций депозита и снятия средств с одного кошелька
+     * Тест на выполнение конкурентных операций депозита и снятия средств с одного счёта
      *
      * @throws Exception если выполнение запроса или проверка результата не удалась
      */
     @Test
     void givenRequests_whenConcurrentDepositWithWithdraw_thenStatus200andWalletReturned() throws Exception {
         WalletRequestDto walletRequestDtoForDeposit = new WalletRequestDto(
-                wallet.getId(),
+                wallet.getId().toString(),
                 OperationType.DEPOSIT.name(),
                 new BigDecimal("15")
         );
         WalletRequestDto walletRequestDtoForWithdraw = new WalletRequestDto(
-                wallet.getId(),
+                wallet.getId().toString(),
                 OperationType.WITHDRAW.name(),
                 new BigDecimal("10")
         );
@@ -214,7 +213,7 @@ public class WalletControllerMockMvcIntegrationTest {
     @Test
     void givenRequest_whenIncorrectOperationTypeProvided_thenStatus422andExceptionThrown() throws Exception {
         WalletRequestDto walletRequestDto = new WalletRequestDto(
-                wallet.getId(),
+                wallet.getId().toString(),
                 "CLAIM",
                 new BigDecimal("3")
         );
@@ -234,7 +233,7 @@ public class WalletControllerMockMvcIntegrationTest {
     @Test
     void givenRequest_whenZeroAmountProvided_thenStatus422andExceptionThrown() throws Exception {
         WalletRequestDto walletRequestDto = new WalletRequestDto(
-                wallet.getId(),
+                wallet.getId().toString(),
                 OperationType.DEPOSIT.name(),
                 BigDecimal.ZERO
         );

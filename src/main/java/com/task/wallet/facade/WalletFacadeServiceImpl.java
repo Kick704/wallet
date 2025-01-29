@@ -45,7 +45,7 @@ public class WalletFacadeServiceImpl implements WalletFacadeService {
     @Override
     public WalletResponseDto processTransaction(WalletRequestDto requestDto) {
         Wallet wallet = walletService.processTransaction(
-                requestDto.getWalletId(),
+                UUID.fromString(requestDto.getWalletId()),
                 OperationType.valueOf(requestDto.getOperationType()),
                 requestDto.getAmount()
         );

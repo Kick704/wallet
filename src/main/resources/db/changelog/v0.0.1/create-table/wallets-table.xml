@@ -16,7 +16,7 @@
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="balance" type="DECIMAL(19,2)">
+            <column name="balance" type="DECIMAL(15,2)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_at" type="timestamp with time zone" defaultValueComputed="CURRENT_TIMESTAMP">

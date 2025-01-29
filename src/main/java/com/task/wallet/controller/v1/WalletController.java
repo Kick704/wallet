@@ -30,6 +30,12 @@ public class WalletController {
         this.walletFacadeService = walletFacadeService;
     }
 
+    /**
+     * Обработчик GET запроса для получения информации о счёте по его идентификатору
+     *
+     * @param walletId идентификатор счёта
+     * @return информация о счёте
+     */
     @GetMapping("wallets/{walletId}")
     @Operation(summary = "Получение информации о счёте",
             description = "Позволяет получить информацию о счёте по его идентификатору")
@@ -39,6 +45,12 @@ public class WalletController {
         return walletFacadeService.getWallet(walletId);
     }
 
+    /**
+     * Обработчик POST запроса для изменения баланса счёта
+     *
+     * @param walletRequestDto объект-запрос
+     * @return изменённый счёт
+     */
     @PostMapping("/wallet")
     @Operation(summary = "Обновление счёта",
             description = "Позволяет выполнить операцию на счётом (пополнение, снятие средств)")

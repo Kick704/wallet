@@ -3,13 +3,12 @@ package com.task.wallet.model.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Schema(description = "Информация о счёте")
 public class WalletResponseDto {
 
-    @Schema(description = "Идентификатор счёта")
-    private UUID walletId;
+    @Schema(description = "Идентификатор счёта", format = "uuid")
+    private String walletId;
 
     @Schema(description = "Баланс счёта")
     private BigDecimal balance;
@@ -17,16 +16,16 @@ public class WalletResponseDto {
     public WalletResponseDto() {
     }
 
-    public WalletResponseDto(UUID walletId, BigDecimal balance) {
+    public WalletResponseDto(String walletId, BigDecimal balance) {
         this.walletId = walletId;
         this.balance = balance;
     }
 
-    public UUID getWalletId() {
+    public String getWalletId() {
         return walletId;
     }
 
-    public void setWalletId(UUID walletId) {
+    public void setWalletId(String walletId) {
         this.walletId = walletId;
     }
 
